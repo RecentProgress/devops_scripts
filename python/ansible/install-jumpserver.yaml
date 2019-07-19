@@ -1,0 +1,36 @@
+---
+- hosts: web1
+  tasks:
+    - name: 检测主机是否存活
+      ping:
+    - name: 安装python3和python虚拟环境
+      yum: name={{ item }} state=latest
+      with_items:
+        - epel-release
+        - wget
+        - gcc
+        - git
+        - python36
+        - python36-devel
+    - name: 建立虚拟环境
+      shell: cd /opt && python3.6 -m venv py3 && source /opt/py3/bin/activate
+    - name: 下载并安装coco(jumpserver客户端注册服务)
+      shell: cd /opt && git clone https://github.com/jumpserver/coco.git && echo "source /opt/py3/bin/activate" > /opt/coco/.env
+    - name: 安装coco依赖
+      shell: cd /opt/coco/requirements && pip install --upgrade pip
+    - name: 安装python模块
+      shell: yum -y  install $(cat rpm_requirements.txt) && pip install -r requirements.txt
+    - name: 创建keys logs目录
+      file: path={{ item }} state=directory
+      with_items:
+        - /opt/coco/keys
+        - /opt/coco/logs
+    - name: 传输本地coco配置文件至被控主句coco目录中
+      synchronize:
+        src: /opt/working/conf.py
+        dest: /opt/coco/conf.py
+    - name: 启动本地cocod client 服务
+      shell: cd /opt/coco && ./cocod start -d
+
+
+
