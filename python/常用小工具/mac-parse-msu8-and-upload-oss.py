@@ -210,7 +210,7 @@ def runningMysql(id, path):
 
 # 通知钉钉
 def postMsg(content):
-    url = 'https://oapi.dingtalk.com/robot/send?access_token=ee6a5b8fdd47a169cdfc97e2c3431846d14d42016c27510933d00c0283b22e0a'
+    url = 'https://oapi.dingtalk.com/robot/send?access_token=****'
 
     HEADERS = {"Content-Type": "application/json;charset=utf-8"}
 
